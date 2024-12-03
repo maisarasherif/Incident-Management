@@ -31,14 +31,28 @@ services:
       - MONGO_INITDB_DATABASE=myNewDatabase  # Set the name of the database to create
     networks:
       - mern-network
-  
+
+  mongodb-exporter:
+    image: bitnami/mongodb-exporter:latest
+    container_name: mongodb-exporter
+    environment:
+      - MONGODB_URI=mongodb://root:example@database:27017/admin?authMechanism=SCRAM-SHA-256
+    ports:
+      - "9216:9216"
+    depends_on:
+      - database
+    networks:
+      - mern-network
+
   prometheus:
       image: prom/prometheus:latest
       container_name: prometheus
       ports:
         - "9090:9090"
       networks:
-      - mern-network
+        - mern-network
+      depends_on:
+        - database
       command: "--config.file=/etc/prometheus/prometheus.yml"
       volumes:
         - /home/azureuser/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
