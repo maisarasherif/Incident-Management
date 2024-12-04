@@ -24,11 +24,11 @@ services:
       - "27017:27017"
     volumes:
       - db-data:/data/db
-      - ./init:/docker-entrypoint-initdb.d  # Mount the init directory
+      - ./init:/docker-entrypoint-initdb.d
     environment:
-      - MONGO_INITDB_ROOT_USERNAME=root  # Set up a root username
-      - MONGO_INITDB_ROOT_PASSWORD=example  # Set up a root password
-      - MONGO_INITDB_DATABASE=myNewDatabase  # Set the name of the database to create
+      - MONGO_INITDB_ROOT_USERNAME=root
+      - MONGO_INITDB_ROOT_PASSWORD=example
+      - MONGO_INITDB_DATABASE=myNewDatabase
     networks:
       - mern-network
 
@@ -45,19 +45,31 @@ services:
       - mern-network
 
   prometheus:
-      image: prom/prometheus:latest
-      container_name: prometheus
-      ports:
-        - "9090:9090"
-      networks:
-        - mern-network
-      depends_on:
-        - database
-      command: "--config.file=/etc/prometheus/prometheus.yml"
-      volumes:
-        - /home/azureuser/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
-        - prometheus-data:/prometheus
-      restart: unless-stopped
+    image: prom/prometheus:latest
+    container_name: prometheus
+    ports:
+      - "9090:9090"
+    networks:
+      - mern-network
+    depends_on:
+      - database
+    command: "--config.file=/etc/prometheus/prometheus.yml"
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - ./alert.rules.yml:/etc/prometheus/alert.rules.yml:ro
+      - prometheus-data:/prometheus
+    restart: unless-stopped
+
+  alertmanager:
+    image: prom/alertmanager
+    container_name: alertmanager
+    ports:
+      - "9093:9093"
+    volumes:
+      - ./alertmanager.yml:/etc/alertmanager/alertmanager.yml:ro
+    networks:
+      - mern-network
+    restart: unless-stopped
 
   grafana:
     image: grafana/grafana:latest
@@ -73,7 +85,7 @@ services:
   node_exporter:
     image: prom/node-exporter:latest
     container_name: node_exporter
-    command: 
+    command:
       - '--path.rootfs=/host'
     restart: unless-stopped
     volumes:
