@@ -1,0 +1,21 @@
+global:
+  resolve_timeout: 5m
+
+route:
+  receiver: "email-notifier"
+
+receivers:
+  - name: "email-notifier"
+    email_configs:
+      - to: "maisara.islam.mi@gmail.com"
+        from: "maisarasherif27@gmail.com"
+        smarthost: "smtp.gmail.com:587"
+        auth_username: "maisarasherif27@gmail.com"
+        auth_password: "5513 2259"
+
+inhibit_rules:
+  - source_match:
+      severity: 'critical'
+    target_match:
+      severity: 'warning'
+    equal: ['alertname', 'instance']
