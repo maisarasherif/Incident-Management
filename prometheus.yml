@@ -1,7 +1,9 @@
 global:
-  scrape_interval:  15s
-  evaluation_interval: 15s # Evaluate rules every 15 seconds. The default is every 1 minute.
+  scrape_interval:  10s                    # How frequently to scrape targets
+  evaluation_interval: 10s                 # Evaluate rules every 10 seconds. The default is every 1 minute.
 
+
+# Rules and alerts are read from the specified file(s)
 rule_files:
   - /etc/prometheus/alert.rules.yml
 
@@ -20,7 +22,3 @@ scrape_configs:
     scrape_interval:  5s
     static_configs:
       - targets: ['localhost:9090']
-
-  - job_name: 'node_exporter'
-    static_configs:
-      - targets: ['node_exporter:9100']
