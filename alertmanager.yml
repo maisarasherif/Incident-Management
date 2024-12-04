@@ -1,6 +1,6 @@
 global:
   resolve_timeout: 1m
-  slack_api_url: "https://hooks.slack.com/services/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"
+  slack_api_url: "paste your webhook"
 
 route:
   # group_by: ['alertname']
@@ -12,7 +12,7 @@ route:
 receivers:
 - name: 'slack-notifications'
   slack_configs:
-    # - api_url: "https://hooks.slack.com/services/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"
+    # - api_url: "paste your webhook"
   - channel: '#database'
     send_resolved: true
     icon_url: https://avatars3.githubusercontent.com/u/3380462
