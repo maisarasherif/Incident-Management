@@ -1,0 +1,11 @@
+groups:
+  - name: mongodb-alerts
+    rules:
+      - alert: DatabaseDown
+        expr: mongodb_up == 0
+        for: 1m
+        labels:
+          severity: critical
+        annotations:
+          summary: "MongoDB Database Down"
+          description: "MongoDB has been down for more than 1 minute."
