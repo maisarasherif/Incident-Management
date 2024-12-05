@@ -1,36 +1,18 @@
 version: '3.8'
 services:
-  frontend:
-    build: ./client/
-    ports:
-      - "5173:5173"
-    depends_on:
-      - backend
-    networks:
-      - mern-network
-
-  backend:
-    build: ./server/
-    ports:
-      - "5000:5000"
-    depends_on:
-      - database
-    networks:
-      - mern-network
-
   database:
     image: mongo
     ports:
       - "27017:27017"
-    volumes:
-      - db-data:/data/db
-      - ./init:/docker-entrypoint-initdb.d
+    #volumes:
+      #- db-data:/data/db
+      #- ./init:/docker-entrypoint-initdb.d
     environment:
       - MONGO_INITDB_ROOT_USERNAME=root
       - MONGO_INITDB_ROOT_PASSWORD=example
       - MONGO_INITDB_DATABASE=myNewDatabase
     networks:
-      - mern-network
+      - my-network
 
   mongodb-exporter:
     image: bitnami/mongodb-exporter:latest
@@ -42,7 +24,7 @@ services:
     depends_on:
       - database
     networks:
-      - mern-network
+      - my-network
 
   prometheus:
     image: prom/prometheus:latest
@@ -50,7 +32,7 @@ services:
     ports:
       - "9090:9090"
     networks:
-      - mern-network
+      - my-network
     depends_on:
       - database
     command: "--config.file=/etc/prometheus/prometheus.yml"
@@ -68,7 +50,7 @@ services:
     volumes:
       - ./alertmanager.yml:/etc/alertmanager/alertmanager.yml:ro
     networks:
-      - mern-network
+      - my-network
     restart: unless-stopped
 
   grafana:
@@ -77,30 +59,17 @@ services:
     ports:
       - "3000:3000"
     networks:
-      - mern-network
+      - my-network
     volumes:
       - grafana-data:/var/lib/grafana
     restart: unless-stopped
-
-  node_exporter:
-    image: prom/node-exporter:latest
-    container_name: node_exporter
-    command:
-      - '--path.rootfs=/host'
-    restart: unless-stopped
-    volumes:
-      - '/:/host:ro,ro'
-    ports:
-      - "9100:9100"
-    networks:
-      - mern-network
 
 volumes:
   prometheus-data:
     driver: local
   grafana-data:
     driver: local
-  db-data:
+  #db-data:
 
 networks:
-  mern-network:
+  my-network:
