@@ -1,5 +1,5 @@
 groups:
-  - name: mongodb-alerts
+  - name: alert.rules
     rules:
       - alert: DatabaseDown
         expr: mongodb_up == 0
