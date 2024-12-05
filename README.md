@@ -1,4 +1,4 @@
 # Incident-Management
 
-**Simulating Database outage**
+***Simulating Database outage***
 
